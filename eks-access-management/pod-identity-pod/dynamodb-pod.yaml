@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamodb-pod
+  namespace: va-test
+spec:
+  serviceAccountName: dynamodb-sa
+
+  containers:
+    - name: aws-cli
+      image: public.ecr.aws/aws-cli/aws-cli:latest
+      command: ["sleep", "3600"]

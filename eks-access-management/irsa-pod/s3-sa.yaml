@@ -1,0 +1,7 @@
+apiVersion: v1
+# IRSA: we annotate the Kubernetes ServiceAccount with the IAM role ARN. 
+# Annotation will be added later in the tutorial with kubectl.
+kind: ServiceAccount
+metadata:
+  name: s3-sa
+  namespace: va-test
