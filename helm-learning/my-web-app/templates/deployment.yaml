@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-web-app.name" . }}
+  labels:
+    {{- include "my-web-app.labels" . | nindent 4 }}
+    environment: {{ required "environment must be specified" .Values.environment | quote }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "my-web-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "my-web-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
+          {{- with .Values.resources }}
+          resources:
+            requests:
+              cpu: {{ .requests.cpu | quote }}
+              memory: {{ .requests.memory | quote }}
+            limits:
+              cpu: {{ .limits.cpu | quote }}
+              memory: {{ .limits.memory | quote }}
+          {{- end }}
+          ports:
+            - containerPort: 80
+          {{- if .Values.configMap.enabled }}
+          env:
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "my-web-app.name" . }}
+                  key: message
+            {{- range .Values.extraEnv }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}

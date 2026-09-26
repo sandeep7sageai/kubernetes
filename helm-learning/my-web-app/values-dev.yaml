@@ -1,0 +1,6 @@
+replicaCount: 1
+
+environment: dev
+
+configMap:
+  message: "Hello from DEV!"
