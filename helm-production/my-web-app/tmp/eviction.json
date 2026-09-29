@@ -1,0 +1,8 @@
+{
+  "apiVersion": "policy/v1",
+  "kind": "Eviction",
+  "metadata": {
+    "name": "dev-web-my-web-app-9b9c84f5d-64gq4",
+    "namespace": "helm-learning"
+  }
+}

@@ -1,0 +1,65 @@
+replicaCount: 1
+
+environment: dev
+
+configMap:
+  message: "Hello from DEV!"
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+
+affinity:
+  nodeAffinity:
+
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: eks.amazonaws.com/nodegroup
+              operator: In
+              values:
+                - ManagedAppNodeGroup-4llRIEFkQKW6
+
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: topology.kubernetes.io/zone
+              operator: In
+              values:
+                - us-east-1a
+
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: my-web-app
+              app.kubernetes.io/instance: dev-web
+          topologyKey: kubernetes.io/hostname                
+
+tolerations: []
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: my-web-app
+        app.kubernetes.io/instance: dev-web

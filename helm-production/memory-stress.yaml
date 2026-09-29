@@ -1,0 +1,28 @@
+# This pod deliberately allocates memory in roughly 5 MiB chunks:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-stress
+  namespace: helm-learning
+spec:
+  containers:
+    - name: memory-stress
+      image: python:3.13-alpine
+      command: ["python", "-c"]
+      args:
+        - |
+          import time
+
+          chunks = []
+
+          while True:
+              chunks.append(bytearray(5 * 1024 * 1024))
+              print(f"Allocated approximately {len(chunks) * 5} MiB", flush=True)
+              time.sleep(1)
+      resources:
+        requests:
+          memory: "32Mi"
+          cpu: "50m"
+        limits:
+          memory: "64Mi"
+          cpu: "500m"

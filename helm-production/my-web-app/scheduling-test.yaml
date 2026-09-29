@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: scheduling-test
+  namespace: helm-learning
+spec:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: does-not-exist
+
+  containers:
+    - name: nginx
+      image: nginx:1.27

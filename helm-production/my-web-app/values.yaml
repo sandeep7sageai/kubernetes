@@ -1,0 +1,75 @@
+# we can overwrite these values while installing the Helm chart using --set or by providing a custom values file
+# example: helm template production-web . --set configMap.enabled=false \
+#          --set service.type=LoadBalancer  
+
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: "1.27"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+configMap:
+  enabled: true
+  message: "Hello from Helm!"
+
+environment: ""
+
+extraEnv:
+  - name: LOG_LEVEL
+    value: "info"
+  - name: APP_REGION
+    value: "us-east-1"
+  - name: FEATURE_X
+    value: "true"
+
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+
+
+readinessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+
+livenessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  failureThreshold: 3
+
+startupProbe:
+  enabled: true
+  path: /
+  periodSeconds: 5
+  failureThreshold: 12
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+
+affinity: {}
+
+tolerations: []
+
+topologySpreadConstraints: []
