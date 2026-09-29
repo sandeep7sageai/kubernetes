@@ -1,3 +1,15 @@
+# About 
+
+Part 1 — helm-learning
+"What is Helm and how do charts work?"
+             ↓
+Part 2 — helm-production
+"How do I make the workload production-ready?"
+             ↓
+Part 3 — helm-config-secrets
+"How do I securely configure the application?"
+
+
 # Few important tips
 
 ----------------------------------------------------------------------------------------------
