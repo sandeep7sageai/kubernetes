@@ -2,3 +2,9 @@ replicaCount: 5
 
 service:
   type: LoadBalancer
+
+config:
+  appEnv: production
+  appRegion: us-east-1
+  logLevel: warn
+  featureXEnabled: "false"

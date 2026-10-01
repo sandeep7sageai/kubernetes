@@ -3,6 +3,7 @@ replicaCount: 1
 environment: dev
 
 configMap:
+  enabled: true
   message: "Hello from DEV!"
 
 strategy:
@@ -63,3 +64,28 @@ topologySpreadConstraints:
       matchLabels:
         app.kubernetes.io/name: my-web-app
         app.kubernetes.io/instance: dev-web
+
+config:
+  appEnv: development
+  appRegion: us-east-1
+  logLevel: info
+  featureXEnabled: "true"
+
+externalSecret:
+  enabled: true
+  refreshInterval: 1m
+
+  secretStore:
+    name: aws-secret-manager-useast1
+    kind: ClusterSecretStore
+
+  remoteSecret:
+    key: helm-learning/config-web/database
+
+
+initContainer:
+  enabled: true
+
+  dependency:
+    host: demo-database
+    port: 80

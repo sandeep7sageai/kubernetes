@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-container-test
+  namespace: helm-learning
+
+spec:
+  initContainers:
+    - name: wait-for-service
+      image: busybox:1.36
+
+      command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for config-web..."
+
+          until wget -q -O /dev/null http://config-web/; do
+            echo "config-web is not available yet..."
+            sleep 2
+          done
+
+          echo "config-web is available!"
+
+  containers:
+    - name: application
+      image: nginx:1.27

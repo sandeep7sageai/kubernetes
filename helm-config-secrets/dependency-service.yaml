@@ -1,0 +1,40 @@
+# We're not pretending nginx is actually a database. 
+# We're just creating a simple reachable dependency so we can study Kubernetes startup behavior without introducing PostgreSQL/MySQL complexity.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-database
+  namespace: helm-learning
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: demo-database
+
+  template:
+    metadata:
+      labels:
+        app: demo-database
+
+    spec:
+      containers:
+        - name: database-simulator
+          image: nginx:1.27
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-database
+  namespace: helm-learning
+
+spec:
+  selector:
+    app: demo-database
+
+  ports:
+    - port: 80
+      targetPort: 80

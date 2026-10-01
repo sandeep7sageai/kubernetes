@@ -162,6 +162,44 @@ IAM Role
 dynamodb:ListTables
 ```
 
+
+### Create the Pod Identity association
+```bash
+Get the role ARN:
+
+ROLE_ARN=$(aws iam get-role \
+  --role-name eks-sre01-ebs-csi-role \
+  --query 'Role.Arn' \
+  --output text)
+
+echo "$ROLE_ARN"
+
+Then:
+
+aws eks create-pod-identity-association \
+  --cluster-name woodmac-eks-cluster-sre01-dev \
+  --namespace kube-system \
+  --service-account ebs-csi-controller-sa \
+  --role-arn "$ROLE_ARN" \
+  --region us-east-1
+
+This command means exactly:
+
+For cluster:
+woodmac-eks-cluster-sre01-dev
+
+When a Pod uses:
+
+namespace:      kube-system
+serviceAccount: ebs-csi-controller-sa
+
+give it credentials for:
+
+IAM Role:
+eks-sre01-ebs-csi-role
+````
+
+
 The workload identity can be verified from inside the Pod:
 
 ```bash

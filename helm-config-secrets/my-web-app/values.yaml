@@ -19,6 +19,12 @@ configMap:
 
 environment: ""
 
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
 extraEnv:
   - name: LOG_LEVEL
     value: "info"
@@ -73,3 +79,24 @@ affinity: {}
 tolerations: []
 
 topologySpreadConstraints: []
+
+config:
+  appEnv: development
+  appRegion: us-east-1
+  logLevel: info
+  featureXEnabled: "false"
+
+
+
+initContainer:
+  enabled: false
+
+  image:
+    repository: busybox
+    tag: "1.36"
+
+  dependency:
+    host: demo-database
+    port: 80
+
+  retryInterval: 2

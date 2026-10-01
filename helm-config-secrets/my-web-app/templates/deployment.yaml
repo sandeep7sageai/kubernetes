@@ -36,6 +36,35 @@ spec:
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: app-config
+          configMap:
+            name: {{ include "my-web-app.name" . }}
+        - name: database-secret
+          secret:
+            secretName: {{ include "my-web-app.name" . }}-database
+      {{- if .Values.initContainer.enabled }}
+      initContainers:
+        - name: wait-for-service
+          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}"
+
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for {{ .Values.initContainer.dependency.host }}:{{ .Values.initContainer.dependency.port }}..."
+
+              until wget \
+                -q \
+                -O /dev/null \
+                http://{{ .Values.initContainer.dependency.host }}:{{ .Values.initContainer.dependency.port }}; do
+
+                echo "Dependency not available. Retrying..."
+                sleep {{ .Values.initContainer.retryInterval }}
+              done
+
+              echo "Dependency is available."
+      {{- end }}
       containers:
         - name: nginx
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
@@ -76,14 +105,16 @@ spec:
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
           {{- end }}
           {{- if .Values.configMap.enabled }}
-          env:
-            - name: APP_MESSAGE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "my-web-app.name" . }}
-                  key: message
-            {{- range .Values.extraEnv }}
-            - name: {{ .name }}
-              value: {{ .value | quote }}
-            {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "my-web-app.name" . }}
           {{- end }}
+          - secretRef:
+              name: {{ include "my-web-app.name" . }}-database
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/myapp
+              readOnly: true
+            - name: database-secret
+              mountPath: /etc/secrets
+              readOnly: true  

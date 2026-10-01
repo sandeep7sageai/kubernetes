@@ -1,13 +1,46 @@
 # About 
 
-Part 1 — helm-learning
-"What is Helm and how do charts work?"
-             ↓
-Part 2 — helm-production
-"How do I make the workload production-ready?"
-             ↓
-Part 3 — helm-config-secrets
-"How do I securely configure the application?"
+
+PART 1 — helm-learning
+Helm Fundamentals
+      │
+      ▼
+Chart structure
+Templates
+Values
+Install / Upgrade
+History / Rollback
+      │
+      ▼
+PART 2 — helm-production
+Production Deployment Behavior
+      │
+      ▼
+Resources
+Health probes
+HPA
+PDB
+Graceful shutdown
+Scheduling
+Affinity
+Cluster Autoscaler
+Rolling updates
+      │
+      ▼
+PART 3 — helm-config-secrets
+Application State & Lifecycle
+      │
+      ▼
+ConfigMaps
+Secrets
+External Secrets
+Persistent Storage
+EBS CSI
+StatefulSets
+Jobs
+Helm Hooks
+Smoke Tests
+Init Containers
 
 
 # Few important tips

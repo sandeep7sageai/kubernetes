@@ -1,8 +1,9 @@
-{{- if .Values.configMap.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "my-web-app.name" . }}
 data:
-  message: {{ .Values.configMap.message | quote }}
-{{- end }}
+  APP_ENV: {{ .Values.config.appEnv | quote }}
+  APP_REGION: {{ .Values.config.appRegion | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  FEATURE_X_ENABLED: {{ .Values.config.featureXEnabled | quote }}
